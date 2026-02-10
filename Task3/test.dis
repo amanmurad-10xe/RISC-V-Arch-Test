@@ -1,0 +1,123 @@
+
+test.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text.init:
+
+80000000 <_start>:
+80000000:	00400293          	addi	t0,zero,4
+80000004:	30229073          	csrrw	zero,medeleg,t0
+80000008:	00002297          	auipc	t0,0x2
+8000000c:	ffc28293          	addi	t0,t0,-4 # 80002004 <s_trap_vector>
+80000010:	10529073          	csrrw	zero,stvec,t0
+80000014:	010000ef          	jal	ra,80000024 <switch_to_supervisor>
+
+80000018 <s_entry>:
+80000018:	03c000ef          	jal	ra,80000054 <switch_to_user>
+
+8000001c <u_entry>:
+8000001c:	100022f3          	csrrs	t0,sstatus,zero
+80000020:	0540006f          	jal	zero,80000074 <test_pass>
+
+80000024 <switch_to_supervisor>:
+80000024:	300022f3          	csrrs	t0,mstatus,zero
+80000028:	ffffe337          	lui	t1,0xffffe
+8000002c:	7ff30313          	addi	t1,t1,2047 # ffffe7ff <_end+0x7fffc7db>
+80000030:	0062f2b3          	and	t0,t0,t1
+80000034:	00001337          	lui	t1,0x1
+80000038:	80030313          	addi	t1,t1,-2048 # 800 <_start-0x7ffff800>
+8000003c:	0062e2b3          	or	t0,t0,t1
+80000040:	30029073          	csrrw	zero,mstatus,t0
+80000044:	00000397          	auipc	t2,0x0
+80000048:	fd438393          	addi	t2,t2,-44 # 80000018 <s_entry>
+8000004c:	34139073          	csrrw	zero,mepc,t2
+80000050:	30200073          	mret
+
+80000054 <switch_to_user>:
+80000054:	100022f3          	csrrs	t0,sstatus,zero
+80000058:	eff00313          	addi	t1,zero,-257
+8000005c:	0062f2b3          	and	t0,t0,t1
+80000060:	10029073          	csrrw	zero,sstatus,t0
+80000064:	00000397          	auipc	t2,0x0
+80000068:	fb838393          	addi	t2,t2,-72 # 8000001c <u_entry>
+8000006c:	14139073          	csrrw	zero,sepc,t2
+80000070:	10200073          	sret
+
+80000074 <test_pass>:
+80000074:	555551b7          	lui	gp,0x55555
+80000078:	55518193          	addi	gp,gp,1365 # 55555555 <_start-0x2aaaaaab>
+8000007c:	00001297          	auipc	t0,0x1
+80000080:	f832a223          	sw	gp,-124(t0) # 80001000 <tohost>
+80000084:	0180006f          	jal	zero,8000009c <write_tohost>
+
+80000088 <test_fail>:
+80000088:	deadc1b7          	lui	gp,0xdeadc
+8000008c:	eef18193          	addi	gp,gp,-273 # deadbeef <_end+0x5ead9ecb>
+80000090:	00001297          	auipc	t0,0x1
+80000094:	f632a823          	sw	gp,-144(t0) # 80001000 <tohost>
+80000098:	0040006f          	jal	zero,8000009c <write_tohost>
+
+8000009c <write_tohost>:
+8000009c:	00100193          	addi	gp,zero,1
+800000a0:	00001297          	auipc	t0,0x1
+800000a4:	f632a023          	sw	gp,-160(t0) # 80001000 <tohost>
+800000a8:	ff5ff06f          	jal	zero,8000009c <write_tohost>
+800000ac:	00000013          	addi	zero,zero,0
+
+800000b0 <begin_signature>:
+800000b0:	00000013          	addi	zero,zero,0
+800000b4:	00000013          	addi	zero,zero,0
+800000b8:	00000013          	addi	zero,zero,0
+
+Disassembly of section .tohost:
+
+80001000 <tohost>:
+	...
+
+80001040 <fromhost>:
+	...
+
+Disassembly of section .text:
+
+80002000 <s_trap_vector-0x4>:
+80002000:	800fe06f          	jal	zero,80000000 <_start>
+
+80002004 <s_trap_vector>:
+80002004:	142022f3          	csrrs	t0,scause,zero
+80002008:	14102373          	csrrs	t1,sepc,zero
+8000200c:	00200393          	addi	t2,zero,2
+80002010:	00728463          	beq	t0,t2,80002018 <handle_illegal>
+80002014:	874fe06f          	jal	zero,80000088 <test_fail>
+
+80002018 <handle_illegal>:
+80002018:	00430313          	addi	t1,t1,4
+8000201c:	14131073          	csrrw	zero,sepc,t1
+80002020:	10200073          	sret
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	3441                	.insn	2, 0x3441
+   2:	0000                	.insn	2, 0x0000
+   4:	7200                	.insn	2, 0x7200
+   6:	7369                	.insn	2, 0x7369
+   8:	01007663          	bgeu	zero,a6,14 <_start-0x7fffffec>
+   c:	002a                	.insn	2, 0x002a
+   e:	0000                	.insn	2, 0x0000
+  10:	7205                	.insn	2, 0x7205
+  12:	3376                	.insn	2, 0x3376
+  14:	6932                	.insn	2, 0x6932
+  16:	7032                	.insn	2, 0x7032
+  18:	5f31                	.insn	2, 0x5f31
+  1a:	326d                	.insn	2, 0x326d
+  1c:	3070                	.insn	2, 0x3070
+  1e:	7a5f 6369 7273      	.insn	6, 0x727363697a5f
+  24:	7032                	.insn	2, 0x7032
+  26:	5f30                	.insn	2, 0x5f30
+  28:	6d7a                	.insn	2, 0x6d7a
+  2a:	756d                	.insn	2, 0x756d
+  2c:	316c                	.insn	2, 0x316c
+  2e:	3070                	.insn	2, 0x3070
+  30:	0800                	.insn	2, 0x0800
+  32:	0a01                	.insn	2, 0x0a01
+  34:	0b                	.byte	0x0b
