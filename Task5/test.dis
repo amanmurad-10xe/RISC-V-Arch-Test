@@ -1,0 +1,1247 @@
+
+test.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text.init:
+
+80000000 <_start>:
+80000000:	000012b7          	lui	t0,0x1
+80000004:	80028293          	addi	t0,t0,-2048 # 800 <_start-0x7ffff800>
+80000008:	00001337          	lui	t1,0x1
+8000000c:	0062e2b3          	or	t0,t0,t1
+80000010:	3002a073          	csrrs	zero,mstatus,t0
+80000014:	00000297          	auipc	t0,0x0
+80000018:	01c28293          	addi	t0,t0,28 # 80000030 <trap_vector>
+8000001c:	00300313          	addi	t1,zero,3
+80000020:	fff34313          	xori	t1,t1,-1
+80000024:	0062f2b3          	and	t0,t0,t1
+80000028:	30529073          	csrrw	zero,mtvec,t0
+8000002c:	7d50106f          	jal	zero,80002000 <main>
+
+80000030 <trap_vector>:
+80000030:	342022f3          	csrrs	t0,mcause,zero
+80000034:	00c00313          	addi	t1,zero,12
+80000038:	00628c63          	beq	t0,t1,80000050 <handle_instruction_fault>
+8000003c:	00d00313          	addi	t1,zero,13
+80000040:	00628c63          	beq	t0,t1,80000058 <handle_load_fault>
+80000044:	00f00313          	addi	t1,zero,15
+80000048:	00628a63          	beq	t0,t1,8000005c <handle_store_fault>
+8000004c:	0640306f          	jal	zero,800030b0 <test_fail>
+
+80000050 <handle_instruction_fault>:
+80000050:	34109073          	csrrw	zero,mepc,ra
+80000054:	30200073          	mret
+
+80000058 <handle_load_fault>:
+80000058:	0080006f          	jal	zero,80000060 <trap_finish>
+
+8000005c <handle_store_fault>:
+8000005c:	0040006f          	jal	zero,80000060 <trap_finish>
+
+80000060 <trap_finish>:
+80000060:	341022f3          	csrrs	t0,mepc,zero
+80000064:	00428293          	addi	t0,t0,4
+80000068:	34129073          	csrrw	zero,mepc,t0
+8000006c:	30200073          	mret
+80000070:	00000013          	addi	zero,zero,0
+80000074:	00000013          	addi	zero,zero,0
+80000078:	00000013          	addi	zero,zero,0
+8000007c:	00000013          	addi	zero,zero,0
+80000080:	00000013          	addi	zero,zero,0
+
+Disassembly of section .tohost:
+
+80001000 <tohost>:
+	...
+
+80001040 <fromhost>:
+	...
+
+Disassembly of section .text:
+
+80002000 <main>:
+80002000:	2fb00513          	addi	a0,zero,763
+80002004:	00003597          	auipc	a1,0x3
+80002008:	ffc58593          	addi	a1,a1,-4 # 80005000 <l0_pt>
+8000200c:	0025d593          	srli	a1,a1,0x2
+80002010:	00000613          	addi	a2,zero,0
+80002014:	00100693          	addi	a3,zero,1
+80002018:	110000ef          	jal	ra,80002128 <set_PTE>
+8000201c:	2f100513          	addi	a0,zero,753
+80002020:	fffff597          	auipc	a1,0xfffff
+80002024:	fe058593          	addi	a1,a1,-32 # 80001000 <tohost>
+80002028:	0025d593          	srli	a1,a1,0x2
+8000202c:	00700613          	addi	a2,zero,7
+80002030:	00000693          	addi	a3,zero,0
+80002034:	0f4000ef          	jal	ra,80002128 <set_PTE>
+80002038:	2f200513          	addi	a0,zero,754
+8000203c:	00000597          	auipc	a1,0x0
+80002040:	0ec58593          	addi	a1,a1,236 # 80002128 <set_PTE>
+80002044:	0025d593          	srli	a1,a1,0x2
+80002048:	00700613          	addi	a2,zero,7
+8000204c:	00000693          	addi	a3,zero,0
+80002050:	0d8000ef          	jal	ra,80002128 <set_PTE>
+80002054:	2f400513          	addi	a0,zero,756
+80002058:	00002597          	auipc	a1,0x2
+8000205c:	fa858593          	addi	a1,a1,-88 # 80004000 <l1_pt>
+80002060:	0025d593          	srli	a1,a1,0x2
+80002064:	00700613          	addi	a2,zero,7
+80002068:	00000693          	addi	a3,zero,0
+8000206c:	0bc000ef          	jal	ra,80002128 <set_PTE>
+80002070:	2f500513          	addi	a0,zero,757
+80002074:	00003597          	auipc	a1,0x3
+80002078:	f8c58593          	addi	a1,a1,-116 # 80005000 <l0_pt>
+8000207c:	0025d593          	srli	a1,a1,0x2
+80002080:	00700613          	addi	a2,zero,7
+80002084:	00000693          	addi	a3,zero,0
+80002088:	0a0000ef          	jal	ra,80002128 <set_PTE>
+8000208c:	2f300513          	addi	a0,zero,755
+80002090:	00001597          	auipc	a1,0x1
+80002094:	f7058593          	addi	a1,a1,-144 # 80003000 <sm_test>
+80002098:	0025d593          	srli	a1,a1,0x2
+8000209c:	00700613          	addi	a2,zero,7
+800020a0:	00000693          	addi	a3,zero,0
+800020a4:	084000ef          	jal	ra,80002128 <set_PTE>
+800020a8:	2af00513          	addi	a0,zero,687
+800020ac:	00003597          	auipc	a1,0x3
+800020b0:	f5458593          	addi	a1,a1,-172 # 80005000 <l0_pt>
+800020b4:	0025d593          	srli	a1,a1,0x2
+800020b8:	00000613          	addi	a2,zero,0
+800020bc:	00100693          	addi	a3,zero,1
+800020c0:	068000ef          	jal	ra,80002128 <set_PTE>
+800020c4:	0d400513          	addi	a0,zero,212
+800020c8:	00004597          	auipc	a1,0x4
+800020cc:	f3858593          	addi	a1,a1,-200 # 80006000 <test_data>
+800020d0:	0025d593          	srli	a1,a1,0x2
+800020d4:	00700613          	addi	a2,zero,7
+800020d8:	00000693          	addi	a3,zero,0
+800020dc:	04c000ef          	jal	ra,80002128 <set_PTE>
+800020e0:	12000073          	sfence.vma	zero,zero
+800020e4:	800002b7          	lui	t0,0x80000
+800020e8:	00002317          	auipc	t1,0x2
+800020ec:	f1830313          	addi	t1,t1,-232 # 80004000 <l1_pt>
+800020f0:	00c35313          	srli	t1,t1,0xc
+800020f4:	0062e2b3          	or	t0,t0,t1
+800020f8:	18029073          	csrrw	zero,satp,t0
+800020fc:	12000073          	sfence.vma	zero,zero
+80002100:	000022b7          	lui	t0,0x2
+80002104:	80028293          	addi	t0,t0,-2048 # 1800 <_start-0x7fffe800>
+80002108:	3002b073          	csrrc	zero,mstatus,t0
+8000210c:	000012b7          	lui	t0,0x1
+80002110:	80028293          	addi	t0,t0,-2048 # 800 <_start-0x7ffff800>
+80002114:	3002a073          	csrrs	zero,mstatus,t0
+80002118:	00000293          	addi	t0,zero,0
+8000211c:	beef32b7          	lui	t0,0xbeef3
+80002120:	34129073          	csrrw	zero,mepc,t0
+80002124:	30200073          	mret
+
+80002128 <set_PTE>:
+80002128:	00058293          	addi	t0,a1,0
+8000212c:	c0000313          	addi	t1,zero,-1024
+80002130:	0062f2b3          	and	t0,t0,t1
+80002134:	00069e63          	bne	a3,zero,80002150 <l1_pte>
+
+80002138 <l0_pte>:
+80002138:	0c12e293          	ori	t0,t0,193
+8000213c:	00161313          	slli	t1,a2,0x1
+80002140:	0062e2b3          	or	t0,t0,t1
+80002144:	00003317          	auipc	t1,0x3
+80002148:	ebc30313          	addi	t1,t1,-324 # 80005000 <l0_pt>
+8000214c:	0100006f          	jal	zero,8000215c <save_pte>
+
+80002150 <l1_pte>:
+80002150:	0012e293          	ori	t0,t0,1
+80002154:	00002317          	auipc	t1,0x2
+80002158:	eac30313          	addi	t1,t1,-340 # 80004000 <l1_pt>
+
+8000215c <save_pte>:
+8000215c:	00251393          	slli	t2,a0,0x2
+80002160:	00730333          	add	t1,t1,t2
+80002164:	00532023          	sw	t0,0(t1)
+80002168:	00008067          	jalr	zero,0(ra)
+	...
+
+80003000 <sm_test>:
+80003000:	abcd4437          	lui	s0,0xabcd4
+
+80003004 <sm_xwr_page>:
+80003004:	010400e7          	jalr	ra,16(s0) # abcd4010 <_end+0x2bccdff4>
+80003008:	abcdd2b7          	lui	t0,0xabcdd
+8000300c:	afe28293          	addi	t0,t0,-1282 # abcdcafe <_end+0x2bcd6ae2>
+80003010:	00542223          	sw	t0,4(s0)
+80003014:	00442283          	lw	t0,4(s0)
+80003018:	abcdd337          	lui	t1,0xabcdd
+8000301c:	afe30313          	addi	t1,t1,-1282 # abcdcafe <_end+0x2bcd6ae2>
+80003020:	08629863          	bne	t0,t1,800030b0 <test_fail>
+
+80003024 <sm_wr_page>:
+80003024:	0d400513          	addi	a0,zero,212
+80003028:	800065b7          	lui	a1,0x80006
+8000302c:	0025d593          	srli	a1,a1,0x2
+80003030:	00300613          	addi	a2,zero,3
+80003034:	00000693          	addi	a3,zero,0
+80003038:	8f0ff0ef          	jal	ra,80002128 <set_PTE>
+8000303c:	12000073          	sfence.vma	zero,zero
+80003040:	010400e7          	jalr	ra,16(s0)
+80003044:	abcdd2b7          	lui	t0,0xabcdd
+80003048:	afe28293          	addi	t0,t0,-1282 # abcdcafe <_end+0x2bcd6ae2>
+8000304c:	00542423          	sw	t0,8(s0)
+80003050:	00842283          	lw	t0,8(s0)
+80003054:	abcdd337          	lui	t1,0xabcdd
+80003058:	afe30313          	addi	t1,t1,-1282 # abcdcafe <_end+0x2bcd6ae2>
+8000305c:	04629a63          	bne	t0,t1,800030b0 <test_fail>
+
+80003060 <sm_r_page>:
+80003060:	0d400513          	addi	a0,zero,212
+80003064:	800065b7          	lui	a1,0x80006
+80003068:	0025d593          	srli	a1,a1,0x2
+8000306c:	00100613          	addi	a2,zero,1
+80003070:	00000693          	addi	a3,zero,0
+80003074:	8b4ff0ef          	jal	ra,80002128 <set_PTE>
+80003078:	12000073          	sfence.vma	zero,zero
+8000307c:	010400e7          	jalr	ra,16(s0)
+80003080:	abcdd2b7          	lui	t0,0xabcdd
+80003084:	afe28293          	addi	t0,t0,-1282 # abcdcafe <_end+0x2bcd6ae2>
+80003088:	00542623          	sw	t0,12(s0)
+8000308c:	00c42283          	lw	t0,12(s0)
+80003090:	87654337          	lui	t1,0x87654
+80003094:	32130313          	addi	t1,t1,801 # 87654321 <_end+0x764e305>
+80003098:	00629c63          	bne	t0,t1,800030b0 <test_fail>
+8000309c:	0040006f          	jal	zero,800030a0 <test_pass>
+
+800030a0 <test_pass>:
+800030a0:	00100193          	addi	gp,zero,1
+800030a4:	ffffe297          	auipc	t0,0xffffe
+800030a8:	f432ae23          	sw	gp,-164(t0) # 80001000 <tohost>
+800030ac:	0140006f          	jal	zero,800030c0 <write_tohost>
+
+800030b0 <test_fail>:
+800030b0:	00300193          	addi	gp,zero,3
+800030b4:	ffffe297          	auipc	t0,0xffffe
+800030b8:	f432a623          	sw	gp,-180(t0) # 80001000 <tohost>
+800030bc:	0040006f          	jal	zero,800030c0 <write_tohost>
+
+800030c0 <write_tohost>:
+800030c0:	ffffe297          	auipc	t0,0xffffe
+800030c4:	f432a023          	sw	gp,-192(t0) # 80001000 <tohost>
+800030c8:	ff9ff06f          	jal	zero,800030c0 <write_tohost>
+800030cc:	00000013          	addi	zero,zero,0
+800030d0:	00000013          	addi	zero,zero,0
+800030d4:	00000013          	addi	zero,zero,0
+800030d8:	00000013          	addi	zero,zero,0
+800030dc:	00000013          	addi	zero,zero,0
+800030e0:	00000013          	addi	zero,zero,0
+800030e4:	00000013          	addi	zero,zero,0
+800030e8:	00000013          	addi	zero,zero,0
+800030ec:	00000013          	addi	zero,zero,0
+800030f0:	00000013          	addi	zero,zero,0
+800030f4:	00000013          	addi	zero,zero,0
+800030f8:	00000013          	addi	zero,zero,0
+800030fc:	00000013          	addi	zero,zero,0
+80003100:	00000013          	addi	zero,zero,0
+80003104:	00000013          	addi	zero,zero,0
+80003108:	00000013          	addi	zero,zero,0
+8000310c:	00000013          	addi	zero,zero,0
+80003110:	00000013          	addi	zero,zero,0
+80003114:	00000013          	addi	zero,zero,0
+80003118:	00000013          	addi	zero,zero,0
+8000311c:	00000013          	addi	zero,zero,0
+80003120:	00000013          	addi	zero,zero,0
+80003124:	00000013          	addi	zero,zero,0
+80003128:	00000013          	addi	zero,zero,0
+8000312c:	00000013          	addi	zero,zero,0
+80003130:	00000013          	addi	zero,zero,0
+80003134:	00000013          	addi	zero,zero,0
+80003138:	00000013          	addi	zero,zero,0
+8000313c:	00000013          	addi	zero,zero,0
+80003140:	00000013          	addi	zero,zero,0
+80003144:	00000013          	addi	zero,zero,0
+80003148:	00000013          	addi	zero,zero,0
+8000314c:	00000013          	addi	zero,zero,0
+80003150:	00000013          	addi	zero,zero,0
+80003154:	00000013          	addi	zero,zero,0
+80003158:	00000013          	addi	zero,zero,0
+8000315c:	00000013          	addi	zero,zero,0
+80003160:	00000013          	addi	zero,zero,0
+80003164:	00000013          	addi	zero,zero,0
+80003168:	00000013          	addi	zero,zero,0
+8000316c:	00000013          	addi	zero,zero,0
+80003170:	00000013          	addi	zero,zero,0
+80003174:	00000013          	addi	zero,zero,0
+80003178:	00000013          	addi	zero,zero,0
+8000317c:	00000013          	addi	zero,zero,0
+80003180:	00000013          	addi	zero,zero,0
+80003184:	00000013          	addi	zero,zero,0
+80003188:	00000013          	addi	zero,zero,0
+8000318c:	00000013          	addi	zero,zero,0
+80003190:	00000013          	addi	zero,zero,0
+80003194:	00000013          	addi	zero,zero,0
+80003198:	00000013          	addi	zero,zero,0
+8000319c:	00000013          	addi	zero,zero,0
+800031a0:	00000013          	addi	zero,zero,0
+800031a4:	00000013          	addi	zero,zero,0
+800031a8:	00000013          	addi	zero,zero,0
+800031ac:	00000013          	addi	zero,zero,0
+800031b0:	00000013          	addi	zero,zero,0
+800031b4:	00000013          	addi	zero,zero,0
+800031b8:	00000013          	addi	zero,zero,0
+800031bc:	00000013          	addi	zero,zero,0
+800031c0:	00000013          	addi	zero,zero,0
+800031c4:	00000013          	addi	zero,zero,0
+800031c8:	00000013          	addi	zero,zero,0
+800031cc:	00000013          	addi	zero,zero,0
+800031d0:	00000013          	addi	zero,zero,0
+800031d4:	00000013          	addi	zero,zero,0
+800031d8:	00000013          	addi	zero,zero,0
+800031dc:	00000013          	addi	zero,zero,0
+800031e0:	00000013          	addi	zero,zero,0
+800031e4:	00000013          	addi	zero,zero,0
+800031e8:	00000013          	addi	zero,zero,0
+800031ec:	00000013          	addi	zero,zero,0
+800031f0:	00000013          	addi	zero,zero,0
+800031f4:	00000013          	addi	zero,zero,0
+800031f8:	00000013          	addi	zero,zero,0
+800031fc:	00000013          	addi	zero,zero,0
+80003200:	00000013          	addi	zero,zero,0
+80003204:	00000013          	addi	zero,zero,0
+80003208:	00000013          	addi	zero,zero,0
+8000320c:	00000013          	addi	zero,zero,0
+80003210:	00000013          	addi	zero,zero,0
+80003214:	00000013          	addi	zero,zero,0
+80003218:	00000013          	addi	zero,zero,0
+8000321c:	00000013          	addi	zero,zero,0
+80003220:	00000013          	addi	zero,zero,0
+80003224:	00000013          	addi	zero,zero,0
+80003228:	00000013          	addi	zero,zero,0
+8000322c:	00000013          	addi	zero,zero,0
+80003230:	00000013          	addi	zero,zero,0
+80003234:	00000013          	addi	zero,zero,0
+80003238:	00000013          	addi	zero,zero,0
+8000323c:	00000013          	addi	zero,zero,0
+80003240:	00000013          	addi	zero,zero,0
+80003244:	00000013          	addi	zero,zero,0
+80003248:	00000013          	addi	zero,zero,0
+8000324c:	00000013          	addi	zero,zero,0
+80003250:	00000013          	addi	zero,zero,0
+80003254:	00000013          	addi	zero,zero,0
+80003258:	00000013          	addi	zero,zero,0
+8000325c:	00000013          	addi	zero,zero,0
+80003260:	00000013          	addi	zero,zero,0
+80003264:	00000013          	addi	zero,zero,0
+80003268:	00000013          	addi	zero,zero,0
+8000326c:	00000013          	addi	zero,zero,0
+80003270:	00000013          	addi	zero,zero,0
+80003274:	00000013          	addi	zero,zero,0
+80003278:	00000013          	addi	zero,zero,0
+8000327c:	00000013          	addi	zero,zero,0
+80003280:	00000013          	addi	zero,zero,0
+80003284:	00000013          	addi	zero,zero,0
+80003288:	00000013          	addi	zero,zero,0
+8000328c:	00000013          	addi	zero,zero,0
+80003290:	00000013          	addi	zero,zero,0
+80003294:	00000013          	addi	zero,zero,0
+80003298:	00000013          	addi	zero,zero,0
+8000329c:	00000013          	addi	zero,zero,0
+800032a0:	00000013          	addi	zero,zero,0
+800032a4:	00000013          	addi	zero,zero,0
+800032a8:	00000013          	addi	zero,zero,0
+800032ac:	00000013          	addi	zero,zero,0
+800032b0:	00000013          	addi	zero,zero,0
+800032b4:	00000013          	addi	zero,zero,0
+800032b8:	00000013          	addi	zero,zero,0
+800032bc:	00000013          	addi	zero,zero,0
+800032c0:	00000013          	addi	zero,zero,0
+800032c4:	00000013          	addi	zero,zero,0
+800032c8:	00000013          	addi	zero,zero,0
+800032cc:	00000013          	addi	zero,zero,0
+800032d0:	00000013          	addi	zero,zero,0
+800032d4:	00000013          	addi	zero,zero,0
+800032d8:	00000013          	addi	zero,zero,0
+800032dc:	00000013          	addi	zero,zero,0
+800032e0:	00000013          	addi	zero,zero,0
+800032e4:	00000013          	addi	zero,zero,0
+800032e8:	00000013          	addi	zero,zero,0
+800032ec:	00000013          	addi	zero,zero,0
+800032f0:	00000013          	addi	zero,zero,0
+800032f4:	00000013          	addi	zero,zero,0
+800032f8:	00000013          	addi	zero,zero,0
+800032fc:	00000013          	addi	zero,zero,0
+80003300:	00000013          	addi	zero,zero,0
+80003304:	00000013          	addi	zero,zero,0
+80003308:	00000013          	addi	zero,zero,0
+8000330c:	00000013          	addi	zero,zero,0
+80003310:	00000013          	addi	zero,zero,0
+80003314:	00000013          	addi	zero,zero,0
+80003318:	00000013          	addi	zero,zero,0
+8000331c:	00000013          	addi	zero,zero,0
+80003320:	00000013          	addi	zero,zero,0
+80003324:	00000013          	addi	zero,zero,0
+80003328:	00000013          	addi	zero,zero,0
+8000332c:	00000013          	addi	zero,zero,0
+80003330:	00000013          	addi	zero,zero,0
+80003334:	00000013          	addi	zero,zero,0
+80003338:	00000013          	addi	zero,zero,0
+8000333c:	00000013          	addi	zero,zero,0
+80003340:	00000013          	addi	zero,zero,0
+80003344:	00000013          	addi	zero,zero,0
+80003348:	00000013          	addi	zero,zero,0
+8000334c:	00000013          	addi	zero,zero,0
+80003350:	00000013          	addi	zero,zero,0
+80003354:	00000013          	addi	zero,zero,0
+80003358:	00000013          	addi	zero,zero,0
+8000335c:	00000013          	addi	zero,zero,0
+80003360:	00000013          	addi	zero,zero,0
+80003364:	00000013          	addi	zero,zero,0
+80003368:	00000013          	addi	zero,zero,0
+8000336c:	00000013          	addi	zero,zero,0
+80003370:	00000013          	addi	zero,zero,0
+80003374:	00000013          	addi	zero,zero,0
+80003378:	00000013          	addi	zero,zero,0
+8000337c:	00000013          	addi	zero,zero,0
+80003380:	00000013          	addi	zero,zero,0
+80003384:	00000013          	addi	zero,zero,0
+80003388:	00000013          	addi	zero,zero,0
+8000338c:	00000013          	addi	zero,zero,0
+80003390:	00000013          	addi	zero,zero,0
+80003394:	00000013          	addi	zero,zero,0
+80003398:	00000013          	addi	zero,zero,0
+8000339c:	00000013          	addi	zero,zero,0
+800033a0:	00000013          	addi	zero,zero,0
+800033a4:	00000013          	addi	zero,zero,0
+800033a8:	00000013          	addi	zero,zero,0
+800033ac:	00000013          	addi	zero,zero,0
+800033b0:	00000013          	addi	zero,zero,0
+800033b4:	00000013          	addi	zero,zero,0
+800033b8:	00000013          	addi	zero,zero,0
+800033bc:	00000013          	addi	zero,zero,0
+800033c0:	00000013          	addi	zero,zero,0
+800033c4:	00000013          	addi	zero,zero,0
+800033c8:	00000013          	addi	zero,zero,0
+800033cc:	00000013          	addi	zero,zero,0
+800033d0:	00000013          	addi	zero,zero,0
+800033d4:	00000013          	addi	zero,zero,0
+800033d8:	00000013          	addi	zero,zero,0
+800033dc:	00000013          	addi	zero,zero,0
+800033e0:	00000013          	addi	zero,zero,0
+800033e4:	00000013          	addi	zero,zero,0
+800033e8:	00000013          	addi	zero,zero,0
+800033ec:	00000013          	addi	zero,zero,0
+800033f0:	00000013          	addi	zero,zero,0
+800033f4:	00000013          	addi	zero,zero,0
+800033f8:	00000013          	addi	zero,zero,0
+800033fc:	00000013          	addi	zero,zero,0
+80003400:	00000013          	addi	zero,zero,0
+80003404:	00000013          	addi	zero,zero,0
+80003408:	00000013          	addi	zero,zero,0
+8000340c:	00000013          	addi	zero,zero,0
+80003410:	00000013          	addi	zero,zero,0
+80003414:	00000013          	addi	zero,zero,0
+80003418:	00000013          	addi	zero,zero,0
+8000341c:	00000013          	addi	zero,zero,0
+80003420:	00000013          	addi	zero,zero,0
+80003424:	00000013          	addi	zero,zero,0
+80003428:	00000013          	addi	zero,zero,0
+8000342c:	00000013          	addi	zero,zero,0
+80003430:	00000013          	addi	zero,zero,0
+80003434:	00000013          	addi	zero,zero,0
+80003438:	00000013          	addi	zero,zero,0
+8000343c:	00000013          	addi	zero,zero,0
+80003440:	00000013          	addi	zero,zero,0
+80003444:	00000013          	addi	zero,zero,0
+80003448:	00000013          	addi	zero,zero,0
+8000344c:	00000013          	addi	zero,zero,0
+80003450:	00000013          	addi	zero,zero,0
+80003454:	00000013          	addi	zero,zero,0
+80003458:	00000013          	addi	zero,zero,0
+8000345c:	00000013          	addi	zero,zero,0
+80003460:	00000013          	addi	zero,zero,0
+80003464:	00000013          	addi	zero,zero,0
+80003468:	00000013          	addi	zero,zero,0
+8000346c:	00000013          	addi	zero,zero,0
+80003470:	00000013          	addi	zero,zero,0
+80003474:	00000013          	addi	zero,zero,0
+80003478:	00000013          	addi	zero,zero,0
+8000347c:	00000013          	addi	zero,zero,0
+80003480:	00000013          	addi	zero,zero,0
+80003484:	00000013          	addi	zero,zero,0
+80003488:	00000013          	addi	zero,zero,0
+8000348c:	00000013          	addi	zero,zero,0
+80003490:	00000013          	addi	zero,zero,0
+80003494:	00000013          	addi	zero,zero,0
+80003498:	00000013          	addi	zero,zero,0
+8000349c:	00000013          	addi	zero,zero,0
+800034a0:	00000013          	addi	zero,zero,0
+800034a4:	00000013          	addi	zero,zero,0
+800034a8:	00000013          	addi	zero,zero,0
+800034ac:	00000013          	addi	zero,zero,0
+800034b0:	00000013          	addi	zero,zero,0
+800034b4:	00000013          	addi	zero,zero,0
+800034b8:	00000013          	addi	zero,zero,0
+800034bc:	00000013          	addi	zero,zero,0
+800034c0:	00000013          	addi	zero,zero,0
+800034c4:	00000013          	addi	zero,zero,0
+800034c8:	00000013          	addi	zero,zero,0
+800034cc:	00000013          	addi	zero,zero,0
+800034d0:	00000013          	addi	zero,zero,0
+800034d4:	00000013          	addi	zero,zero,0
+800034d8:	00000013          	addi	zero,zero,0
+800034dc:	00000013          	addi	zero,zero,0
+800034e0:	00000013          	addi	zero,zero,0
+800034e4:	00000013          	addi	zero,zero,0
+800034e8:	00000013          	addi	zero,zero,0
+800034ec:	00000013          	addi	zero,zero,0
+800034f0:	00000013          	addi	zero,zero,0
+800034f4:	00000013          	addi	zero,zero,0
+800034f8:	00000013          	addi	zero,zero,0
+800034fc:	00000013          	addi	zero,zero,0
+80003500:	00000013          	addi	zero,zero,0
+80003504:	00000013          	addi	zero,zero,0
+80003508:	00000013          	addi	zero,zero,0
+8000350c:	00000013          	addi	zero,zero,0
+80003510:	00000013          	addi	zero,zero,0
+80003514:	00000013          	addi	zero,zero,0
+80003518:	00000013          	addi	zero,zero,0
+8000351c:	00000013          	addi	zero,zero,0
+80003520:	00000013          	addi	zero,zero,0
+80003524:	00000013          	addi	zero,zero,0
+80003528:	00000013          	addi	zero,zero,0
+8000352c:	00000013          	addi	zero,zero,0
+80003530:	00000013          	addi	zero,zero,0
+80003534:	00000013          	addi	zero,zero,0
+80003538:	00000013          	addi	zero,zero,0
+8000353c:	00000013          	addi	zero,zero,0
+80003540:	00000013          	addi	zero,zero,0
+80003544:	00000013          	addi	zero,zero,0
+80003548:	00000013          	addi	zero,zero,0
+8000354c:	00000013          	addi	zero,zero,0
+80003550:	00000013          	addi	zero,zero,0
+80003554:	00000013          	addi	zero,zero,0
+80003558:	00000013          	addi	zero,zero,0
+8000355c:	00000013          	addi	zero,zero,0
+80003560:	00000013          	addi	zero,zero,0
+80003564:	00000013          	addi	zero,zero,0
+80003568:	00000013          	addi	zero,zero,0
+8000356c:	00000013          	addi	zero,zero,0
+80003570:	00000013          	addi	zero,zero,0
+80003574:	00000013          	addi	zero,zero,0
+80003578:	00000013          	addi	zero,zero,0
+8000357c:	00000013          	addi	zero,zero,0
+80003580:	00000013          	addi	zero,zero,0
+80003584:	00000013          	addi	zero,zero,0
+80003588:	00000013          	addi	zero,zero,0
+8000358c:	00000013          	addi	zero,zero,0
+80003590:	00000013          	addi	zero,zero,0
+80003594:	00000013          	addi	zero,zero,0
+80003598:	00000013          	addi	zero,zero,0
+8000359c:	00000013          	addi	zero,zero,0
+800035a0:	00000013          	addi	zero,zero,0
+800035a4:	00000013          	addi	zero,zero,0
+800035a8:	00000013          	addi	zero,zero,0
+800035ac:	00000013          	addi	zero,zero,0
+800035b0:	00000013          	addi	zero,zero,0
+800035b4:	00000013          	addi	zero,zero,0
+800035b8:	00000013          	addi	zero,zero,0
+800035bc:	00000013          	addi	zero,zero,0
+800035c0:	00000013          	addi	zero,zero,0
+800035c4:	00000013          	addi	zero,zero,0
+800035c8:	00000013          	addi	zero,zero,0
+800035cc:	00000013          	addi	zero,zero,0
+800035d0:	00000013          	addi	zero,zero,0
+800035d4:	00000013          	addi	zero,zero,0
+800035d8:	00000013          	addi	zero,zero,0
+800035dc:	00000013          	addi	zero,zero,0
+800035e0:	00000013          	addi	zero,zero,0
+800035e4:	00000013          	addi	zero,zero,0
+800035e8:	00000013          	addi	zero,zero,0
+800035ec:	00000013          	addi	zero,zero,0
+800035f0:	00000013          	addi	zero,zero,0
+800035f4:	00000013          	addi	zero,zero,0
+800035f8:	00000013          	addi	zero,zero,0
+800035fc:	00000013          	addi	zero,zero,0
+80003600:	00000013          	addi	zero,zero,0
+80003604:	00000013          	addi	zero,zero,0
+80003608:	00000013          	addi	zero,zero,0
+8000360c:	00000013          	addi	zero,zero,0
+80003610:	00000013          	addi	zero,zero,0
+80003614:	00000013          	addi	zero,zero,0
+80003618:	00000013          	addi	zero,zero,0
+8000361c:	00000013          	addi	zero,zero,0
+80003620:	00000013          	addi	zero,zero,0
+80003624:	00000013          	addi	zero,zero,0
+80003628:	00000013          	addi	zero,zero,0
+8000362c:	00000013          	addi	zero,zero,0
+80003630:	00000013          	addi	zero,zero,0
+80003634:	00000013          	addi	zero,zero,0
+80003638:	00000013          	addi	zero,zero,0
+8000363c:	00000013          	addi	zero,zero,0
+80003640:	00000013          	addi	zero,zero,0
+80003644:	00000013          	addi	zero,zero,0
+80003648:	00000013          	addi	zero,zero,0
+8000364c:	00000013          	addi	zero,zero,0
+80003650:	00000013          	addi	zero,zero,0
+80003654:	00000013          	addi	zero,zero,0
+80003658:	00000013          	addi	zero,zero,0
+8000365c:	00000013          	addi	zero,zero,0
+80003660:	00000013          	addi	zero,zero,0
+80003664:	00000013          	addi	zero,zero,0
+80003668:	00000013          	addi	zero,zero,0
+8000366c:	00000013          	addi	zero,zero,0
+80003670:	00000013          	addi	zero,zero,0
+80003674:	00000013          	addi	zero,zero,0
+80003678:	00000013          	addi	zero,zero,0
+8000367c:	00000013          	addi	zero,zero,0
+80003680:	00000013          	addi	zero,zero,0
+80003684:	00000013          	addi	zero,zero,0
+80003688:	00000013          	addi	zero,zero,0
+8000368c:	00000013          	addi	zero,zero,0
+80003690:	00000013          	addi	zero,zero,0
+80003694:	00000013          	addi	zero,zero,0
+80003698:	00000013          	addi	zero,zero,0
+8000369c:	00000013          	addi	zero,zero,0
+800036a0:	00000013          	addi	zero,zero,0
+800036a4:	00000013          	addi	zero,zero,0
+800036a8:	00000013          	addi	zero,zero,0
+800036ac:	00000013          	addi	zero,zero,0
+800036b0:	00000013          	addi	zero,zero,0
+800036b4:	00000013          	addi	zero,zero,0
+800036b8:	00000013          	addi	zero,zero,0
+800036bc:	00000013          	addi	zero,zero,0
+800036c0:	00000013          	addi	zero,zero,0
+800036c4:	00000013          	addi	zero,zero,0
+800036c8:	00000013          	addi	zero,zero,0
+800036cc:	00000013          	addi	zero,zero,0
+800036d0:	00000013          	addi	zero,zero,0
+800036d4:	00000013          	addi	zero,zero,0
+800036d8:	00000013          	addi	zero,zero,0
+800036dc:	00000013          	addi	zero,zero,0
+800036e0:	00000013          	addi	zero,zero,0
+800036e4:	00000013          	addi	zero,zero,0
+800036e8:	00000013          	addi	zero,zero,0
+800036ec:	00000013          	addi	zero,zero,0
+800036f0:	00000013          	addi	zero,zero,0
+800036f4:	00000013          	addi	zero,zero,0
+800036f8:	00000013          	addi	zero,zero,0
+800036fc:	00000013          	addi	zero,zero,0
+80003700:	00000013          	addi	zero,zero,0
+80003704:	00000013          	addi	zero,zero,0
+80003708:	00000013          	addi	zero,zero,0
+8000370c:	00000013          	addi	zero,zero,0
+80003710:	00000013          	addi	zero,zero,0
+80003714:	00000013          	addi	zero,zero,0
+80003718:	00000013          	addi	zero,zero,0
+8000371c:	00000013          	addi	zero,zero,0
+80003720:	00000013          	addi	zero,zero,0
+80003724:	00000013          	addi	zero,zero,0
+80003728:	00000013          	addi	zero,zero,0
+8000372c:	00000013          	addi	zero,zero,0
+80003730:	00000013          	addi	zero,zero,0
+80003734:	00000013          	addi	zero,zero,0
+80003738:	00000013          	addi	zero,zero,0
+8000373c:	00000013          	addi	zero,zero,0
+80003740:	00000013          	addi	zero,zero,0
+80003744:	00000013          	addi	zero,zero,0
+80003748:	00000013          	addi	zero,zero,0
+8000374c:	00000013          	addi	zero,zero,0
+80003750:	00000013          	addi	zero,zero,0
+80003754:	00000013          	addi	zero,zero,0
+80003758:	00000013          	addi	zero,zero,0
+8000375c:	00000013          	addi	zero,zero,0
+80003760:	00000013          	addi	zero,zero,0
+80003764:	00000013          	addi	zero,zero,0
+80003768:	00000013          	addi	zero,zero,0
+8000376c:	00000013          	addi	zero,zero,0
+80003770:	00000013          	addi	zero,zero,0
+80003774:	00000013          	addi	zero,zero,0
+80003778:	00000013          	addi	zero,zero,0
+8000377c:	00000013          	addi	zero,zero,0
+80003780:	00000013          	addi	zero,zero,0
+80003784:	00000013          	addi	zero,zero,0
+80003788:	00000013          	addi	zero,zero,0
+8000378c:	00000013          	addi	zero,zero,0
+80003790:	00000013          	addi	zero,zero,0
+80003794:	00000013          	addi	zero,zero,0
+80003798:	00000013          	addi	zero,zero,0
+8000379c:	00000013          	addi	zero,zero,0
+800037a0:	00000013          	addi	zero,zero,0
+800037a4:	00000013          	addi	zero,zero,0
+800037a8:	00000013          	addi	zero,zero,0
+800037ac:	00000013          	addi	zero,zero,0
+800037b0:	00000013          	addi	zero,zero,0
+800037b4:	00000013          	addi	zero,zero,0
+800037b8:	00000013          	addi	zero,zero,0
+800037bc:	00000013          	addi	zero,zero,0
+800037c0:	00000013          	addi	zero,zero,0
+800037c4:	00000013          	addi	zero,zero,0
+800037c8:	00000013          	addi	zero,zero,0
+800037cc:	00000013          	addi	zero,zero,0
+800037d0:	00000013          	addi	zero,zero,0
+800037d4:	00000013          	addi	zero,zero,0
+800037d8:	00000013          	addi	zero,zero,0
+800037dc:	00000013          	addi	zero,zero,0
+800037e0:	00000013          	addi	zero,zero,0
+800037e4:	00000013          	addi	zero,zero,0
+800037e8:	00000013          	addi	zero,zero,0
+800037ec:	00000013          	addi	zero,zero,0
+800037f0:	00000013          	addi	zero,zero,0
+800037f4:	00000013          	addi	zero,zero,0
+800037f8:	00000013          	addi	zero,zero,0
+800037fc:	00000013          	addi	zero,zero,0
+80003800:	00000013          	addi	zero,zero,0
+80003804:	00000013          	addi	zero,zero,0
+80003808:	00000013          	addi	zero,zero,0
+8000380c:	00000013          	addi	zero,zero,0
+80003810:	00000013          	addi	zero,zero,0
+80003814:	00000013          	addi	zero,zero,0
+80003818:	00000013          	addi	zero,zero,0
+8000381c:	00000013          	addi	zero,zero,0
+80003820:	00000013          	addi	zero,zero,0
+80003824:	00000013          	addi	zero,zero,0
+80003828:	00000013          	addi	zero,zero,0
+8000382c:	00000013          	addi	zero,zero,0
+80003830:	00000013          	addi	zero,zero,0
+80003834:	00000013          	addi	zero,zero,0
+80003838:	00000013          	addi	zero,zero,0
+8000383c:	00000013          	addi	zero,zero,0
+80003840:	00000013          	addi	zero,zero,0
+80003844:	00000013          	addi	zero,zero,0
+80003848:	00000013          	addi	zero,zero,0
+8000384c:	00000013          	addi	zero,zero,0
+80003850:	00000013          	addi	zero,zero,0
+80003854:	00000013          	addi	zero,zero,0
+80003858:	00000013          	addi	zero,zero,0
+8000385c:	00000013          	addi	zero,zero,0
+80003860:	00000013          	addi	zero,zero,0
+80003864:	00000013          	addi	zero,zero,0
+80003868:	00000013          	addi	zero,zero,0
+8000386c:	00000013          	addi	zero,zero,0
+80003870:	00000013          	addi	zero,zero,0
+80003874:	00000013          	addi	zero,zero,0
+80003878:	00000013          	addi	zero,zero,0
+8000387c:	00000013          	addi	zero,zero,0
+80003880:	00000013          	addi	zero,zero,0
+80003884:	00000013          	addi	zero,zero,0
+80003888:	00000013          	addi	zero,zero,0
+8000388c:	00000013          	addi	zero,zero,0
+80003890:	00000013          	addi	zero,zero,0
+80003894:	00000013          	addi	zero,zero,0
+80003898:	00000013          	addi	zero,zero,0
+8000389c:	00000013          	addi	zero,zero,0
+800038a0:	00000013          	addi	zero,zero,0
+800038a4:	00000013          	addi	zero,zero,0
+800038a8:	00000013          	addi	zero,zero,0
+800038ac:	00000013          	addi	zero,zero,0
+800038b0:	00000013          	addi	zero,zero,0
+800038b4:	00000013          	addi	zero,zero,0
+800038b8:	00000013          	addi	zero,zero,0
+800038bc:	00000013          	addi	zero,zero,0
+800038c0:	00000013          	addi	zero,zero,0
+800038c4:	00000013          	addi	zero,zero,0
+800038c8:	00000013          	addi	zero,zero,0
+800038cc:	00000013          	addi	zero,zero,0
+800038d0:	00000013          	addi	zero,zero,0
+800038d4:	00000013          	addi	zero,zero,0
+800038d8:	00000013          	addi	zero,zero,0
+800038dc:	00000013          	addi	zero,zero,0
+800038e0:	00000013          	addi	zero,zero,0
+800038e4:	00000013          	addi	zero,zero,0
+800038e8:	00000013          	addi	zero,zero,0
+800038ec:	00000013          	addi	zero,zero,0
+800038f0:	00000013          	addi	zero,zero,0
+800038f4:	00000013          	addi	zero,zero,0
+800038f8:	00000013          	addi	zero,zero,0
+800038fc:	00000013          	addi	zero,zero,0
+80003900:	00000013          	addi	zero,zero,0
+80003904:	00000013          	addi	zero,zero,0
+80003908:	00000013          	addi	zero,zero,0
+8000390c:	00000013          	addi	zero,zero,0
+80003910:	00000013          	addi	zero,zero,0
+80003914:	00000013          	addi	zero,zero,0
+80003918:	00000013          	addi	zero,zero,0
+8000391c:	00000013          	addi	zero,zero,0
+80003920:	00000013          	addi	zero,zero,0
+80003924:	00000013          	addi	zero,zero,0
+80003928:	00000013          	addi	zero,zero,0
+8000392c:	00000013          	addi	zero,zero,0
+80003930:	00000013          	addi	zero,zero,0
+80003934:	00000013          	addi	zero,zero,0
+80003938:	00000013          	addi	zero,zero,0
+8000393c:	00000013          	addi	zero,zero,0
+80003940:	00000013          	addi	zero,zero,0
+80003944:	00000013          	addi	zero,zero,0
+80003948:	00000013          	addi	zero,zero,0
+8000394c:	00000013          	addi	zero,zero,0
+80003950:	00000013          	addi	zero,zero,0
+80003954:	00000013          	addi	zero,zero,0
+80003958:	00000013          	addi	zero,zero,0
+8000395c:	00000013          	addi	zero,zero,0
+80003960:	00000013          	addi	zero,zero,0
+80003964:	00000013          	addi	zero,zero,0
+80003968:	00000013          	addi	zero,zero,0
+8000396c:	00000013          	addi	zero,zero,0
+80003970:	00000013          	addi	zero,zero,0
+80003974:	00000013          	addi	zero,zero,0
+80003978:	00000013          	addi	zero,zero,0
+8000397c:	00000013          	addi	zero,zero,0
+80003980:	00000013          	addi	zero,zero,0
+80003984:	00000013          	addi	zero,zero,0
+80003988:	00000013          	addi	zero,zero,0
+8000398c:	00000013          	addi	zero,zero,0
+80003990:	00000013          	addi	zero,zero,0
+80003994:	00000013          	addi	zero,zero,0
+80003998:	00000013          	addi	zero,zero,0
+8000399c:	00000013          	addi	zero,zero,0
+800039a0:	00000013          	addi	zero,zero,0
+800039a4:	00000013          	addi	zero,zero,0
+800039a8:	00000013          	addi	zero,zero,0
+800039ac:	00000013          	addi	zero,zero,0
+800039b0:	00000013          	addi	zero,zero,0
+800039b4:	00000013          	addi	zero,zero,0
+800039b8:	00000013          	addi	zero,zero,0
+800039bc:	00000013          	addi	zero,zero,0
+800039c0:	00000013          	addi	zero,zero,0
+800039c4:	00000013          	addi	zero,zero,0
+800039c8:	00000013          	addi	zero,zero,0
+800039cc:	00000013          	addi	zero,zero,0
+800039d0:	00000013          	addi	zero,zero,0
+800039d4:	00000013          	addi	zero,zero,0
+800039d8:	00000013          	addi	zero,zero,0
+800039dc:	00000013          	addi	zero,zero,0
+800039e0:	00000013          	addi	zero,zero,0
+800039e4:	00000013          	addi	zero,zero,0
+800039e8:	00000013          	addi	zero,zero,0
+800039ec:	00000013          	addi	zero,zero,0
+800039f0:	00000013          	addi	zero,zero,0
+800039f4:	00000013          	addi	zero,zero,0
+800039f8:	00000013          	addi	zero,zero,0
+800039fc:	00000013          	addi	zero,zero,0
+80003a00:	00000013          	addi	zero,zero,0
+80003a04:	00000013          	addi	zero,zero,0
+80003a08:	00000013          	addi	zero,zero,0
+80003a0c:	00000013          	addi	zero,zero,0
+80003a10:	00000013          	addi	zero,zero,0
+80003a14:	00000013          	addi	zero,zero,0
+80003a18:	00000013          	addi	zero,zero,0
+80003a1c:	00000013          	addi	zero,zero,0
+80003a20:	00000013          	addi	zero,zero,0
+80003a24:	00000013          	addi	zero,zero,0
+80003a28:	00000013          	addi	zero,zero,0
+80003a2c:	00000013          	addi	zero,zero,0
+80003a30:	00000013          	addi	zero,zero,0
+80003a34:	00000013          	addi	zero,zero,0
+80003a38:	00000013          	addi	zero,zero,0
+80003a3c:	00000013          	addi	zero,zero,0
+80003a40:	00000013          	addi	zero,zero,0
+80003a44:	00000013          	addi	zero,zero,0
+80003a48:	00000013          	addi	zero,zero,0
+80003a4c:	00000013          	addi	zero,zero,0
+80003a50:	00000013          	addi	zero,zero,0
+80003a54:	00000013          	addi	zero,zero,0
+80003a58:	00000013          	addi	zero,zero,0
+80003a5c:	00000013          	addi	zero,zero,0
+80003a60:	00000013          	addi	zero,zero,0
+80003a64:	00000013          	addi	zero,zero,0
+80003a68:	00000013          	addi	zero,zero,0
+80003a6c:	00000013          	addi	zero,zero,0
+80003a70:	00000013          	addi	zero,zero,0
+80003a74:	00000013          	addi	zero,zero,0
+80003a78:	00000013          	addi	zero,zero,0
+80003a7c:	00000013          	addi	zero,zero,0
+80003a80:	00000013          	addi	zero,zero,0
+80003a84:	00000013          	addi	zero,zero,0
+80003a88:	00000013          	addi	zero,zero,0
+80003a8c:	00000013          	addi	zero,zero,0
+80003a90:	00000013          	addi	zero,zero,0
+80003a94:	00000013          	addi	zero,zero,0
+80003a98:	00000013          	addi	zero,zero,0
+80003a9c:	00000013          	addi	zero,zero,0
+80003aa0:	00000013          	addi	zero,zero,0
+80003aa4:	00000013          	addi	zero,zero,0
+80003aa8:	00000013          	addi	zero,zero,0
+80003aac:	00000013          	addi	zero,zero,0
+80003ab0:	00000013          	addi	zero,zero,0
+80003ab4:	00000013          	addi	zero,zero,0
+80003ab8:	00000013          	addi	zero,zero,0
+80003abc:	00000013          	addi	zero,zero,0
+80003ac0:	00000013          	addi	zero,zero,0
+80003ac4:	00000013          	addi	zero,zero,0
+80003ac8:	00000013          	addi	zero,zero,0
+80003acc:	00000013          	addi	zero,zero,0
+80003ad0:	00000013          	addi	zero,zero,0
+80003ad4:	00000013          	addi	zero,zero,0
+80003ad8:	00000013          	addi	zero,zero,0
+80003adc:	00000013          	addi	zero,zero,0
+80003ae0:	00000013          	addi	zero,zero,0
+80003ae4:	00000013          	addi	zero,zero,0
+80003ae8:	00000013          	addi	zero,zero,0
+80003aec:	00000013          	addi	zero,zero,0
+80003af0:	00000013          	addi	zero,zero,0
+80003af4:	00000013          	addi	zero,zero,0
+80003af8:	00000013          	addi	zero,zero,0
+80003afc:	00000013          	addi	zero,zero,0
+80003b00:	00000013          	addi	zero,zero,0
+80003b04:	00000013          	addi	zero,zero,0
+80003b08:	00000013          	addi	zero,zero,0
+80003b0c:	00000013          	addi	zero,zero,0
+80003b10:	00000013          	addi	zero,zero,0
+80003b14:	00000013          	addi	zero,zero,0
+80003b18:	00000013          	addi	zero,zero,0
+80003b1c:	00000013          	addi	zero,zero,0
+80003b20:	00000013          	addi	zero,zero,0
+80003b24:	00000013          	addi	zero,zero,0
+80003b28:	00000013          	addi	zero,zero,0
+80003b2c:	00000013          	addi	zero,zero,0
+80003b30:	00000013          	addi	zero,zero,0
+80003b34:	00000013          	addi	zero,zero,0
+80003b38:	00000013          	addi	zero,zero,0
+80003b3c:	00000013          	addi	zero,zero,0
+80003b40:	00000013          	addi	zero,zero,0
+80003b44:	00000013          	addi	zero,zero,0
+80003b48:	00000013          	addi	zero,zero,0
+80003b4c:	00000013          	addi	zero,zero,0
+80003b50:	00000013          	addi	zero,zero,0
+80003b54:	00000013          	addi	zero,zero,0
+80003b58:	00000013          	addi	zero,zero,0
+80003b5c:	00000013          	addi	zero,zero,0
+80003b60:	00000013          	addi	zero,zero,0
+80003b64:	00000013          	addi	zero,zero,0
+80003b68:	00000013          	addi	zero,zero,0
+80003b6c:	00000013          	addi	zero,zero,0
+80003b70:	00000013          	addi	zero,zero,0
+80003b74:	00000013          	addi	zero,zero,0
+80003b78:	00000013          	addi	zero,zero,0
+80003b7c:	00000013          	addi	zero,zero,0
+80003b80:	00000013          	addi	zero,zero,0
+80003b84:	00000013          	addi	zero,zero,0
+80003b88:	00000013          	addi	zero,zero,0
+80003b8c:	00000013          	addi	zero,zero,0
+80003b90:	00000013          	addi	zero,zero,0
+80003b94:	00000013          	addi	zero,zero,0
+80003b98:	00000013          	addi	zero,zero,0
+80003b9c:	00000013          	addi	zero,zero,0
+80003ba0:	00000013          	addi	zero,zero,0
+80003ba4:	00000013          	addi	zero,zero,0
+80003ba8:	00000013          	addi	zero,zero,0
+80003bac:	00000013          	addi	zero,zero,0
+80003bb0:	00000013          	addi	zero,zero,0
+80003bb4:	00000013          	addi	zero,zero,0
+80003bb8:	00000013          	addi	zero,zero,0
+80003bbc:	00000013          	addi	zero,zero,0
+80003bc0:	00000013          	addi	zero,zero,0
+80003bc4:	00000013          	addi	zero,zero,0
+80003bc8:	00000013          	addi	zero,zero,0
+80003bcc:	00000013          	addi	zero,zero,0
+80003bd0:	00000013          	addi	zero,zero,0
+80003bd4:	00000013          	addi	zero,zero,0
+80003bd8:	00000013          	addi	zero,zero,0
+80003bdc:	00000013          	addi	zero,zero,0
+80003be0:	00000013          	addi	zero,zero,0
+80003be4:	00000013          	addi	zero,zero,0
+80003be8:	00000013          	addi	zero,zero,0
+80003bec:	00000013          	addi	zero,zero,0
+80003bf0:	00000013          	addi	zero,zero,0
+80003bf4:	00000013          	addi	zero,zero,0
+80003bf8:	00000013          	addi	zero,zero,0
+80003bfc:	00000013          	addi	zero,zero,0
+80003c00:	00000013          	addi	zero,zero,0
+80003c04:	00000013          	addi	zero,zero,0
+80003c08:	00000013          	addi	zero,zero,0
+80003c0c:	00000013          	addi	zero,zero,0
+80003c10:	00000013          	addi	zero,zero,0
+80003c14:	00000013          	addi	zero,zero,0
+80003c18:	00000013          	addi	zero,zero,0
+80003c1c:	00000013          	addi	zero,zero,0
+80003c20:	00000013          	addi	zero,zero,0
+80003c24:	00000013          	addi	zero,zero,0
+80003c28:	00000013          	addi	zero,zero,0
+80003c2c:	00000013          	addi	zero,zero,0
+80003c30:	00000013          	addi	zero,zero,0
+80003c34:	00000013          	addi	zero,zero,0
+80003c38:	00000013          	addi	zero,zero,0
+80003c3c:	00000013          	addi	zero,zero,0
+80003c40:	00000013          	addi	zero,zero,0
+80003c44:	00000013          	addi	zero,zero,0
+80003c48:	00000013          	addi	zero,zero,0
+80003c4c:	00000013          	addi	zero,zero,0
+80003c50:	00000013          	addi	zero,zero,0
+80003c54:	00000013          	addi	zero,zero,0
+80003c58:	00000013          	addi	zero,zero,0
+80003c5c:	00000013          	addi	zero,zero,0
+80003c60:	00000013          	addi	zero,zero,0
+80003c64:	00000013          	addi	zero,zero,0
+80003c68:	00000013          	addi	zero,zero,0
+80003c6c:	00000013          	addi	zero,zero,0
+80003c70:	00000013          	addi	zero,zero,0
+80003c74:	00000013          	addi	zero,zero,0
+80003c78:	00000013          	addi	zero,zero,0
+80003c7c:	00000013          	addi	zero,zero,0
+80003c80:	00000013          	addi	zero,zero,0
+80003c84:	00000013          	addi	zero,zero,0
+80003c88:	00000013          	addi	zero,zero,0
+80003c8c:	00000013          	addi	zero,zero,0
+80003c90:	00000013          	addi	zero,zero,0
+80003c94:	00000013          	addi	zero,zero,0
+80003c98:	00000013          	addi	zero,zero,0
+80003c9c:	00000013          	addi	zero,zero,0
+80003ca0:	00000013          	addi	zero,zero,0
+80003ca4:	00000013          	addi	zero,zero,0
+80003ca8:	00000013          	addi	zero,zero,0
+80003cac:	00000013          	addi	zero,zero,0
+80003cb0:	00000013          	addi	zero,zero,0
+80003cb4:	00000013          	addi	zero,zero,0
+80003cb8:	00000013          	addi	zero,zero,0
+80003cbc:	00000013          	addi	zero,zero,0
+80003cc0:	00000013          	addi	zero,zero,0
+80003cc4:	00000013          	addi	zero,zero,0
+80003cc8:	00000013          	addi	zero,zero,0
+80003ccc:	00000013          	addi	zero,zero,0
+80003cd0:	00000013          	addi	zero,zero,0
+80003cd4:	00000013          	addi	zero,zero,0
+80003cd8:	00000013          	addi	zero,zero,0
+80003cdc:	00000013          	addi	zero,zero,0
+80003ce0:	00000013          	addi	zero,zero,0
+80003ce4:	00000013          	addi	zero,zero,0
+80003ce8:	00000013          	addi	zero,zero,0
+80003cec:	00000013          	addi	zero,zero,0
+80003cf0:	00000013          	addi	zero,zero,0
+80003cf4:	00000013          	addi	zero,zero,0
+80003cf8:	00000013          	addi	zero,zero,0
+80003cfc:	00000013          	addi	zero,zero,0
+80003d00:	00000013          	addi	zero,zero,0
+80003d04:	00000013          	addi	zero,zero,0
+80003d08:	00000013          	addi	zero,zero,0
+80003d0c:	00000013          	addi	zero,zero,0
+80003d10:	00000013          	addi	zero,zero,0
+80003d14:	00000013          	addi	zero,zero,0
+80003d18:	00000013          	addi	zero,zero,0
+80003d1c:	00000013          	addi	zero,zero,0
+80003d20:	00000013          	addi	zero,zero,0
+80003d24:	00000013          	addi	zero,zero,0
+80003d28:	00000013          	addi	zero,zero,0
+80003d2c:	00000013          	addi	zero,zero,0
+80003d30:	00000013          	addi	zero,zero,0
+80003d34:	00000013          	addi	zero,zero,0
+80003d38:	00000013          	addi	zero,zero,0
+80003d3c:	00000013          	addi	zero,zero,0
+80003d40:	00000013          	addi	zero,zero,0
+80003d44:	00000013          	addi	zero,zero,0
+80003d48:	00000013          	addi	zero,zero,0
+80003d4c:	00000013          	addi	zero,zero,0
+80003d50:	00000013          	addi	zero,zero,0
+80003d54:	00000013          	addi	zero,zero,0
+80003d58:	00000013          	addi	zero,zero,0
+80003d5c:	00000013          	addi	zero,zero,0
+80003d60:	00000013          	addi	zero,zero,0
+80003d64:	00000013          	addi	zero,zero,0
+80003d68:	00000013          	addi	zero,zero,0
+80003d6c:	00000013          	addi	zero,zero,0
+80003d70:	00000013          	addi	zero,zero,0
+80003d74:	00000013          	addi	zero,zero,0
+80003d78:	00000013          	addi	zero,zero,0
+80003d7c:	00000013          	addi	zero,zero,0
+80003d80:	00000013          	addi	zero,zero,0
+80003d84:	00000013          	addi	zero,zero,0
+80003d88:	00000013          	addi	zero,zero,0
+80003d8c:	00000013          	addi	zero,zero,0
+80003d90:	00000013          	addi	zero,zero,0
+80003d94:	00000013          	addi	zero,zero,0
+80003d98:	00000013          	addi	zero,zero,0
+80003d9c:	00000013          	addi	zero,zero,0
+80003da0:	00000013          	addi	zero,zero,0
+80003da4:	00000013          	addi	zero,zero,0
+80003da8:	00000013          	addi	zero,zero,0
+80003dac:	00000013          	addi	zero,zero,0
+80003db0:	00000013          	addi	zero,zero,0
+80003db4:	00000013          	addi	zero,zero,0
+80003db8:	00000013          	addi	zero,zero,0
+80003dbc:	00000013          	addi	zero,zero,0
+80003dc0:	00000013          	addi	zero,zero,0
+80003dc4:	00000013          	addi	zero,zero,0
+80003dc8:	00000013          	addi	zero,zero,0
+80003dcc:	00000013          	addi	zero,zero,0
+80003dd0:	00000013          	addi	zero,zero,0
+80003dd4:	00000013          	addi	zero,zero,0
+80003dd8:	00000013          	addi	zero,zero,0
+80003ddc:	00000013          	addi	zero,zero,0
+80003de0:	00000013          	addi	zero,zero,0
+80003de4:	00000013          	addi	zero,zero,0
+80003de8:	00000013          	addi	zero,zero,0
+80003dec:	00000013          	addi	zero,zero,0
+80003df0:	00000013          	addi	zero,zero,0
+80003df4:	00000013          	addi	zero,zero,0
+80003df8:	00000013          	addi	zero,zero,0
+80003dfc:	00000013          	addi	zero,zero,0
+80003e00:	00000013          	addi	zero,zero,0
+80003e04:	00000013          	addi	zero,zero,0
+80003e08:	00000013          	addi	zero,zero,0
+80003e0c:	00000013          	addi	zero,zero,0
+80003e10:	00000013          	addi	zero,zero,0
+80003e14:	00000013          	addi	zero,zero,0
+80003e18:	00000013          	addi	zero,zero,0
+80003e1c:	00000013          	addi	zero,zero,0
+80003e20:	00000013          	addi	zero,zero,0
+80003e24:	00000013          	addi	zero,zero,0
+80003e28:	00000013          	addi	zero,zero,0
+80003e2c:	00000013          	addi	zero,zero,0
+80003e30:	00000013          	addi	zero,zero,0
+80003e34:	00000013          	addi	zero,zero,0
+80003e38:	00000013          	addi	zero,zero,0
+80003e3c:	00000013          	addi	zero,zero,0
+80003e40:	00000013          	addi	zero,zero,0
+80003e44:	00000013          	addi	zero,zero,0
+80003e48:	00000013          	addi	zero,zero,0
+80003e4c:	00000013          	addi	zero,zero,0
+80003e50:	00000013          	addi	zero,zero,0
+80003e54:	00000013          	addi	zero,zero,0
+80003e58:	00000013          	addi	zero,zero,0
+80003e5c:	00000013          	addi	zero,zero,0
+80003e60:	00000013          	addi	zero,zero,0
+80003e64:	00000013          	addi	zero,zero,0
+80003e68:	00000013          	addi	zero,zero,0
+80003e6c:	00000013          	addi	zero,zero,0
+80003e70:	00000013          	addi	zero,zero,0
+80003e74:	00000013          	addi	zero,zero,0
+80003e78:	00000013          	addi	zero,zero,0
+80003e7c:	00000013          	addi	zero,zero,0
+80003e80:	00000013          	addi	zero,zero,0
+80003e84:	00000013          	addi	zero,zero,0
+80003e88:	00000013          	addi	zero,zero,0
+80003e8c:	00000013          	addi	zero,zero,0
+80003e90:	00000013          	addi	zero,zero,0
+80003e94:	00000013          	addi	zero,zero,0
+80003e98:	00000013          	addi	zero,zero,0
+80003e9c:	00000013          	addi	zero,zero,0
+80003ea0:	00000013          	addi	zero,zero,0
+80003ea4:	00000013          	addi	zero,zero,0
+80003ea8:	00000013          	addi	zero,zero,0
+80003eac:	00000013          	addi	zero,zero,0
+80003eb0:	00000013          	addi	zero,zero,0
+80003eb4:	00000013          	addi	zero,zero,0
+80003eb8:	00000013          	addi	zero,zero,0
+80003ebc:	00000013          	addi	zero,zero,0
+80003ec0:	00000013          	addi	zero,zero,0
+80003ec4:	00000013          	addi	zero,zero,0
+80003ec8:	00000013          	addi	zero,zero,0
+80003ecc:	00000013          	addi	zero,zero,0
+80003ed0:	00000013          	addi	zero,zero,0
+80003ed4:	00000013          	addi	zero,zero,0
+80003ed8:	00000013          	addi	zero,zero,0
+80003edc:	00000013          	addi	zero,zero,0
+80003ee0:	00000013          	addi	zero,zero,0
+80003ee4:	00000013          	addi	zero,zero,0
+80003ee8:	00000013          	addi	zero,zero,0
+80003eec:	00000013          	addi	zero,zero,0
+80003ef0:	00000013          	addi	zero,zero,0
+80003ef4:	00000013          	addi	zero,zero,0
+80003ef8:	00000013          	addi	zero,zero,0
+80003efc:	00000013          	addi	zero,zero,0
+80003f00:	00000013          	addi	zero,zero,0
+80003f04:	00000013          	addi	zero,zero,0
+80003f08:	00000013          	addi	zero,zero,0
+80003f0c:	00000013          	addi	zero,zero,0
+80003f10:	00000013          	addi	zero,zero,0
+80003f14:	00000013          	addi	zero,zero,0
+80003f18:	00000013          	addi	zero,zero,0
+80003f1c:	00000013          	addi	zero,zero,0
+80003f20:	00000013          	addi	zero,zero,0
+80003f24:	00000013          	addi	zero,zero,0
+80003f28:	00000013          	addi	zero,zero,0
+80003f2c:	00000013          	addi	zero,zero,0
+80003f30:	00000013          	addi	zero,zero,0
+80003f34:	00000013          	addi	zero,zero,0
+80003f38:	00000013          	addi	zero,zero,0
+80003f3c:	00000013          	addi	zero,zero,0
+80003f40:	00000013          	addi	zero,zero,0
+80003f44:	00000013          	addi	zero,zero,0
+80003f48:	00000013          	addi	zero,zero,0
+80003f4c:	00000013          	addi	zero,zero,0
+80003f50:	00000013          	addi	zero,zero,0
+80003f54:	00000013          	addi	zero,zero,0
+80003f58:	00000013          	addi	zero,zero,0
+80003f5c:	00000013          	addi	zero,zero,0
+80003f60:	00000013          	addi	zero,zero,0
+80003f64:	00000013          	addi	zero,zero,0
+80003f68:	00000013          	addi	zero,zero,0
+80003f6c:	00000013          	addi	zero,zero,0
+80003f70:	00000013          	addi	zero,zero,0
+80003f74:	00000013          	addi	zero,zero,0
+80003f78:	00000013          	addi	zero,zero,0
+80003f7c:	00000013          	addi	zero,zero,0
+80003f80:	00000013          	addi	zero,zero,0
+80003f84:	00000013          	addi	zero,zero,0
+80003f88:	00000013          	addi	zero,zero,0
+80003f8c:	00000013          	addi	zero,zero,0
+80003f90:	00000013          	addi	zero,zero,0
+80003f94:	00000013          	addi	zero,zero,0
+80003f98:	00000013          	addi	zero,zero,0
+80003f9c:	00000013          	addi	zero,zero,0
+80003fa0:	00000013          	addi	zero,zero,0
+80003fa4:	00000013          	addi	zero,zero,0
+80003fa8:	00000013          	addi	zero,zero,0
+80003fac:	00000013          	addi	zero,zero,0
+80003fb0:	00000013          	addi	zero,zero,0
+80003fb4:	00000013          	addi	zero,zero,0
+80003fb8:	00000013          	addi	zero,zero,0
+80003fbc:	00000013          	addi	zero,zero,0
+80003fc0:	00000013          	addi	zero,zero,0
+80003fc4:	00000013          	addi	zero,zero,0
+80003fc8:	00000013          	addi	zero,zero,0
+80003fcc:	00000013          	addi	zero,zero,0
+80003fd0:	00000013          	addi	zero,zero,0
+80003fd4:	00000013          	addi	zero,zero,0
+80003fd8:	00000013          	addi	zero,zero,0
+80003fdc:	00000013          	addi	zero,zero,0
+80003fe0:	00000013          	addi	zero,zero,0
+80003fe4:	00000013          	addi	zero,zero,0
+80003fe8:	00000013          	addi	zero,zero,0
+80003fec:	00000013          	addi	zero,zero,0
+80003ff0:	00000013          	addi	zero,zero,0
+80003ff4:	00000013          	addi	zero,zero,0
+80003ff8:	00000013          	addi	zero,zero,0
+
+Disassembly of section .data:
+
+80004000 <l1_pt>:
+	...
+
+80005000 <l0_pt>:
+	...
+
+80006000 <test_data>:
+80006000:	babe                	.insn	2, 0xbabe
+80006002:	cafe                	.insn	2, 0xcafe
+80006004:	deadbeef          	jal	t4,7ffe15ee <_start-0x1ea12>
+80006008:	5678                	.insn	2, 0x5678
+8000600a:	1234                	.insn	2, 0x1234
+8000600c:	4321                	.insn	2, 0x4321
+8000600e:	8765                	.insn	2, 0x8765
+80006010:	00040433          	add	s0,s0,zero
+80006014:	00000013          	addi	zero,zero,0
+80006018:	00008067          	jalr	zero,0(ra)
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	3441                	.insn	2, 0x3441
+   2:	0000                	.insn	2, 0x0000
+   4:	7200                	.insn	2, 0x7200
+   6:	7369                	.insn	2, 0x7369
+   8:	01007663          	bgeu	zero,a6,14 <_start-0x7fffffec>
+   c:	002a                	.insn	2, 0x002a
+   e:	0000                	.insn	2, 0x0000
+  10:	7205                	.insn	2, 0x7205
+  12:	3376                	.insn	2, 0x3376
+  14:	6932                	.insn	2, 0x6932
+  16:	7032                	.insn	2, 0x7032
+  18:	5f31                	.insn	2, 0x5f31
+  1a:	326d                	.insn	2, 0x326d
+  1c:	3070                	.insn	2, 0x3070
+  1e:	7a5f 6369 7273      	.insn	6, 0x727363697a5f
+  24:	7032                	.insn	2, 0x7032
+  26:	5f30                	.insn	2, 0x5f30
+  28:	6d7a                	.insn	2, 0x6d7a
+  2a:	756d                	.insn	2, 0x756d
+  2c:	316c                	.insn	2, 0x316c
+  2e:	3070                	.insn	2, 0x3070
+  30:	0800                	.insn	2, 0x0800
+  32:	0a01                	.insn	2, 0x0a01
+  34:	0b                	.byte	0x0b
